@@ -53,6 +53,7 @@
             this.chatbox.Size = new System.Drawing.Size(413, 415);
             this.chatbox.TabIndex = 1;
             this.chatbox.Text = "---";
+            this.chatbox.Click += new System.EventHandler(this.chatbox_Click);
             // 
             // tbSend
             // 
@@ -60,14 +61,14 @@
             this.tbSend.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.tbSend.ForeColor = System.Drawing.Color.Lime;
             this.tbSend.Location = new System.Drawing.Point(12, 427);
-            this.tbSend.Multiline = true;
             this.tbSend.Name = "tbSend";
-            this.tbSend.Size = new System.Drawing.Size(372, 23);
+            this.tbSend.Size = new System.Drawing.Size(372, 13);
             this.tbSend.TabIndex = 2;
             this.tbSend.Text = "exemple";
             this.tbSend.WordWrap = false;
+            this.tbSend.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbSend_KeyUp);
             // 
-            // Form1
+            // Chat
             // 
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(437, 462);
@@ -75,8 +76,7 @@
             this.Controls.Add(this.chatbox);
             this.Controls.Add(this.button2);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Name = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Name = "Chat";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -84,9 +84,6 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Label text;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label chatbox;
         private System.Windows.Forms.TextBox tbSend;
