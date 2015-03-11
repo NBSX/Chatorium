@@ -1,0 +1,10 @@
+c:\users\sqlserver\documents\visual studio 2013\Projects\CHAT2\CHAT2\bin\Debug\CHAT2.exe.config
+C:\Users\SQLSERVER\documents\visual studio 2013\Projects\CHAT2\CHAT2\obj\Debug\CHAT2.csprojResolveAssemblyReference.cache
+C:\Users\SQLSERVER\documents\visual studio 2013\Projects\CHAT2\CHAT2\obj\Debug\CHAT2.Properties.Resources.resources
+C:\Users\SQLSERVER\documents\visual studio 2013\Projects\CHAT2\CHAT2\obj\Debug\CHAT2.csproj.GenerateResource.Cache
+C:\Users\SQLSERVER\documents\visual studio 2013\Projects\CHAT2\CHAT2\bin\Debug\CHAT2.exe
+C:\Users\SQLSERVER\documents\visual studio 2013\Projects\CHAT2\CHAT2\bin\Debug\CHAT2.pdb
+C:\Users\SQLSERVER\documents\visual studio 2013\Projects\CHAT2\CHAT2\obj\Debug\CHAT2.Connect.resources
+C:\Users\SQLSERVER\documents\visual studio 2013\Projects\CHAT2\CHAT2\obj\Debug\CHAT2.exe
+C:\Users\SQLSERVER\documents\visual studio 2013\Projects\CHAT2\CHAT2\obj\Debug\CHAT2.pdb
+C:\Users\SQLSERVER\documents\visual studio 2013\Projects\CHAT2\CHAT2\obj\Debug\CHAT2.Chat.resources
