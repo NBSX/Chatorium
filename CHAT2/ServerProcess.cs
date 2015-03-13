@@ -13,10 +13,14 @@ namespace CHAT2
     {
          public string message;
          StreamWriter sw;
+         Stream stream;
  
 
         public ServerProcess()
         {
+            Socket soc = Chat.tcplistener.AcceptSocket();
+            stream = new NetworkStream(soc);
+            sw = new StreamWriter(stream);
             Run();
         }
 
@@ -31,6 +35,7 @@ namespace CHAT2
                         sw.Write(message);
                         message = null;
                     }
+                    stream.Flush();
                 }
                 catch (Exception e)
                 {

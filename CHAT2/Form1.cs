@@ -80,6 +80,7 @@ namespace CHAT2
                     }
                 case "/connect":
                     {
+                        if (connected) break;
                         try
                         {
                             IPAddress ip = IPAddress.Parse(command[1]);
@@ -106,6 +107,17 @@ namespace CHAT2
                             Console.WriteLine("ERROR E2: INVALID IP ADDRESS OR NETMASK");
                             writeToChat("Invalid IP address or netmask.");
                         }
+                        break;
+                    }
+                case "/listen":
+                    {
+                        if (connected) break;
+                        connected = listen();
+                        if (connected)
+                            writeToChat("Connection received!");
+                        else
+                            writeToChat("Error while listening");
+
                         break;
                     }
             }
@@ -139,6 +151,24 @@ namespace CHAT2
                 writeToChat("Connection error!");
                 Console.WriteLine("ERROR CONNECTEX: CONNECTION ERROR");
                 Console.WriteLine(connectex.ToString());
+                return false;
+            }
+        }
+
+        private bool listen()
+        {
+            try
+            {
+                tcplistener = new TcpListener(port);
+                tcplistener.Start();
+                serverThread.Start(serverProcess);
+                return true;
+            }
+            catch(Exception listenex)
+            {
+                writeToChat("Listen error!");
+                Console.WriteLine("ERROR LISTENEX: LISTEN ERROR");
+                Console.WriteLine(listenex.ToString());
                 return false;
             }
         }

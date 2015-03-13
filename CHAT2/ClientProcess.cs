@@ -13,10 +13,12 @@ namespace CHAT2
     {
         string message;
         StreamReader sr;
+        Stream stream;
 
         public ClientProcess()
         {
-            sr = new StreamReader(Chat.tcpclient.GetStream());
+            stream = Chat.tcpclient.GetStream();
+            sr = new StreamReader(stream);
             Run();
         }
 
@@ -26,18 +28,19 @@ namespace CHAT2
             {
                 try
                 {
-                    if(message == null)
+                    message = sr.ReadLine();
+                    if(message != null)
                     {
-                        message = sr.ReadLine();
                         writeToChat(message);
                         message = null;
                     }
+                    stream.Flush();
                 }
                 catch(Exception e)
                 {
                     Console.WriteLine(e.ToString());
                 }
             }
+            }
         }
     }
-}
