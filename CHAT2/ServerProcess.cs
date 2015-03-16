@@ -26,8 +26,11 @@ namespace CHAT2
 
         public  void Run()
         {
+            int i = 0;
             while (true)
             {
+                Chat.outputLog("running ["+i+"]");
+                i++;
                 try
                 {
                     if (message != null)

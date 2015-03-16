@@ -11,6 +11,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using Microsoft.Win32;
 
 namespace CHAT2
 {
@@ -87,11 +88,11 @@ namespace CHAT2
                         try
                         {
                             IPAddress ip = IPAddress.Parse(command[1]);
-                            if (IPAddress.IsLoopback(ip))
+                            /*if (IPAddress.IsLoopback(ip))
                             {
                                 writeToChat("Loopback IP is not useable.");
                                 return;
-                            }
+                            }*/
 
                             /*byte[] mask = new byte[4];
                             string[] bytes = command[2].Split('.');
@@ -108,6 +109,7 @@ namespace CHAT2
                         catch(Exception e2)
                         {
                             Console.WriteLine("ERROR E2: INVALID IP ADDRESS OR NETMASK");
+                            outputLog(e2.ToString());
                             writeToChat("Invalid IP address or netmask.");
                         }
                         break;
@@ -145,14 +147,13 @@ namespace CHAT2
             {
                 tcpclient = new TcpClient();
                 tcpclient.Connect(ip,port);
-
-                clientThread.Start(clientProcess);
+                clientThread.Start(new ClientProcess());
                 return true;
             }
             catch(Exception connectex)
             {
                 writeToChat("Connection error!");
-                Console.WriteLine("ERROR CONNECTEX: CONNECTION ERROR");
+                outputLog(connectex.ToString());
                 Console.WriteLine(connectex.ToString());
                 return false;
             }
@@ -164,18 +165,32 @@ namespace CHAT2
             {
                 tcplistener = new TcpListener(port);
                 tcplistener.Start();
-                serverThread.Start(serverProcess);
+                serverThread.Start(new ServerProcess());
                 return true;
             }
             catch(Exception listenex)
             {
                 writeToChat("Listen error!");
-                Console.WriteLine("ERROR LISTENEX: LISTEN ERROR");
+                outputLog(listenex.ToString());
                 Console.WriteLine(listenex.ToString());
                 return false;
             }
         }
 
+
+        public static void outputLog(string s)
+        {
+            StreamWriter file = new StreamWriter(@"C:\\error_"+ DateTime.Now.Hour.ToString() + ".log");
+            file.WriteLine(DateTime.Today.ToString() + ":::" + DateTime.Now.TimeOfDay.ToString());
+            file.WriteLine(s);
+            file.WriteLine("==================================================");
+            file.Close();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
+        }
         
     }
 }
