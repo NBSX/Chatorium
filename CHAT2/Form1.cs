@@ -33,6 +33,9 @@ namespace CHAT2
         {
             InitializeComponent();
             chatlist = new List<MessageObject>();
+            writeToChat("Bem Vindo!");
+            writeToChat("Arroz! Arroz! Arroz!");
+            tbSend.Text = "Write here!";
             tbSend.Focus();
         }
 
