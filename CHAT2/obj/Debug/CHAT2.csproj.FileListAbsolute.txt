@@ -11,9 +11,9 @@ C:\Users\SQLSERVER\documents\visual studio 2013\Projects\CHAT2\CHAT2\obj\Debug\C
 C:\Users\SQLSERVER\Documents\git\Chat\CHAT2\bin\Debug\CHAT2.exe.config
 C:\Users\SQLSERVER\Documents\git\Chat\CHAT2\obj\Debug\CHAT2.exe
 C:\Users\SQLSERVER\Documents\git\Chat\CHAT2\obj\Debug\CHAT2.pdb
-C:\Users\SQLSERVER\Documents\git\Chat\CHAT2\obj\Debug\CHAT2.csprojResolveAssemblyReference.cache
 C:\Users\SQLSERVER\Documents\git\Chat\CHAT2\obj\Debug\CHAT2.Chat.resources
 C:\Users\SQLSERVER\Documents\git\Chat\CHAT2\obj\Debug\CHAT2.Properties.Resources.resources
 C:\Users\SQLSERVER\Documents\git\Chat\CHAT2\obj\Debug\CHAT2.csproj.GenerateResource.Cache
 C:\Users\SQLSERVER\Documents\git\Chat\CHAT2\bin\Debug\CHAT2.exe
 C:\Users\SQLSERVER\Documents\git\Chat\CHAT2\bin\Debug\CHAT2.pdb
+C:\Users\SQLSERVER\Documents\Git\Chat\CHAT2\obj\Debug\CHAT2.csprojResolveAssemblyReference.cache

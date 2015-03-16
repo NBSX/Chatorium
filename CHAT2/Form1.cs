@@ -21,15 +21,20 @@ namespace CHAT2
         public const int port = 10714;
         public const uint bufferSize = 2048;
 
-        List<MessageObject> chatlist;
-        public static TcpClient tcpclient;
-        public static TcpListener tcplistener;
-        Thread clientThread;
-        Thread serverThread;
-        ClientProcess clientProcess;
-        ServerProcess serverProcess;
+        static List<MessageObject> chatlist;
+        TcpClient receiver;
+        TcpClient sender;
+
+        TcpListener listener;
+
+        Thread receiver_process;
+        Thread sender_process;
+
         bool connected = false;
         IPAddress local;
+        char[] out_packet;
+        char[] in_packet;
+        
 
         public Chat()
         {
@@ -37,11 +42,6 @@ namespace CHAT2
             chatlist = new List<MessageObject>();
             tbSend.Focus();
             local = IPAddress.Parse("127.0.0.1");
-        }
-
-        public void chatNode()
-        {
-
         }
 
         private void tbSend_KeyUp(object sender, KeyPressEventArgs e)
@@ -61,7 +61,10 @@ namespace CHAT2
                 else
                 {
                     if (connected)
-                        serverProcess.message = tbSend.Text;
+                    {
+                        out_packet = new char[bufferSize];
+                        stringToArray(tbSend.Text,out_packet);
+                    }
                     writeToChat(tbSend.Text, "localhost");
                 }
                 tbSend.Clear();
@@ -118,7 +121,9 @@ namespace CHAT2
                         if (connected) break;
                         connected = listen();
                         if (connected)
+                        {
                             writeToChat("Connection received!");
+                        }
                         else
                             writeToChat("Error while listening");
 
@@ -136,13 +141,13 @@ namespace CHAT2
             }
         }
 
-        public void writeToChat(string msg, string author = "command")
+        public static void writeToChat(string msg, string author = "command")
         {
             chatlist.Add(new MessageObject(author, msg));
             RefreshChat();
         }
 
-        private void RefreshChat()
+        private static void RefreshChat()
         {
             chatbox.DataSource = null;
             chatbox.DataSource = chatlist;
@@ -153,16 +158,16 @@ namespace CHAT2
         {
             try
             {
-                tcpclient = new TcpClient();
-                tcpclient.Connect(ip,port);
-                clientProcess = new ClientProcess();
+                receiver = new TcpClient();
+                receiver.Connect(ip,port);
+                receiver_process = new Thread(new ThreadStart(ReceiverProcess));
+                receiver_process.Start();
                 return true;
             }
             catch(Exception connectex)
             {
                 writeToChat("Connection error!");
                 outputLog(connectex.ToString());
-                Console.WriteLine(connectex.ToString());
                 return false;
             }
         }
@@ -171,20 +176,64 @@ namespace CHAT2
         {
             try
             {
-                tcplistener = new TcpListener(local,port);
-                tcplistener.Start();
-                serverProcess = new ServerProcess();
+                listener = new TcpListener(local,port);
+                listener.Start();
+                receiver = listener.AcceptTcpClient();
+                receiver_process = new Thread(new ThreadStart(ReceiverProcess));
+                receiver_process.Start();
                 return true;
             }
             catch(Exception listenex)
             {
                 writeToChat("Listen error!");
                 outputLog(listenex.ToString());
-                Console.WriteLine(listenex.ToString());
                 return false;
             }
         }
 
+        private void ReceiverProcess()
+        {
+            StreamReader sr = new StreamReader(receiver.GetStream());
+            StreamWriter sw = new StreamWriter(receiver.GetStream());
+            while(true)
+            {
+                try
+                {
+                    sr.Read(in_packet, 0, (int)bufferSize);
+                    if(in_packet != null)
+                    {
+                        string s = new string(in_packet);
+                        s = s.Trim('\0');
+                        s = s.Trim();
+                        if(s.Length > 1)
+                            writeToChat(s);
+                        in_packet = null;
+                    }
+
+                    if(out_packet != null)
+                    {
+                        Thread.Sleep(500);
+                        string g = new string(out_packet);
+                        g = g.Trim('\0');
+                        g = g.Trim();
+                        if (String.Compare(g, "orangemonkeyeagle") == 0)
+                            break;
+                        sw.WriteLine(out_packet);
+                        out_packet = null;
+                    }
+                    sw.Flush();
+                }
+                catch(Exception cpex)
+                {
+                    writeToChat("Client Process error!");
+                    outputLog(cpex.ToString());
+                }
+            }
+            writeToChat("Connection terminated.");
+            receiver.Close();
+            sr.Close();
+            sw.Close();
+        }
 
         public static void outputLog(string s)
         {
@@ -200,5 +249,11 @@ namespace CHAT2
 
         }
         
+        private void stringToArray(string s, char[] c)
+        {
+            for (int i = 0; i < s.Length; i++)
+                c[i] = s[i];
+
+        }
     }
 }

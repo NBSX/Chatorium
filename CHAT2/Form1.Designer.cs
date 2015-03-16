@@ -30,7 +30,7 @@
         {
             this.button2 = new System.Windows.Forms.Button();
             this.tbSend = new System.Windows.Forms.TextBox();
-            this.chatbox = new System.Windows.Forms.ListBox();
+            chatbox = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
             // button2
@@ -59,20 +59,20 @@
             // 
             // chatbox
             // 
-            this.chatbox.BackColor = System.Drawing.Color.Black;
-            this.chatbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.chatbox.ForeColor = System.Drawing.Color.Green;
-            this.chatbox.FormattingEnabled = true;
-            this.chatbox.Location = new System.Drawing.Point(11, 7);
-            this.chatbox.Name = "chatbox";
-            this.chatbox.Size = new System.Drawing.Size(413, 405);
-            this.chatbox.TabIndex = 3;
+            chatbox.BackColor = System.Drawing.Color.Black;
+            chatbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            chatbox.ForeColor = System.Drawing.Color.Green;
+            chatbox.FormattingEnabled = true;
+            chatbox.Location = new System.Drawing.Point(11, 7);
+            chatbox.Name = "chatbox";
+            chatbox.Size = new System.Drawing.Size(413, 405);
+            chatbox.TabIndex = 3;
             // 
             // Chat
             // 
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(437, 462);
-            this.Controls.Add(this.chatbox);
+            this.Controls.Add(chatbox);
             this.Controls.Add(this.tbSend);
             this.Controls.Add(this.button2);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -86,7 +86,7 @@
 
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.TextBox tbSend;
-        private System.Windows.Forms.ListBox chatbox;
+        private static System.Windows.Forms.ListBox chatbox;
     }
 }
 
