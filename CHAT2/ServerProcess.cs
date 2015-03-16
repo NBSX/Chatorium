@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace CHAT2
 {
@@ -14,14 +15,15 @@ namespace CHAT2
          public string message;
          StreamWriter sw;
          Stream stream;
- 
+         Thread runner;
 
         public ServerProcess()
         {
             Socket soc = Chat.tcplistener.AcceptSocket();
             stream = new NetworkStream(soc);
             sw = new StreamWriter(stream);
-            Run();
+            runner = new Thread(new ThreadStart(Run));
+            runner.Start();
         }
 
         public  void Run()
