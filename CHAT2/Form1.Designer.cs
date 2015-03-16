@@ -54,7 +54,6 @@
             this.tbSend.Name = "tbSend";
             this.tbSend.Size = new System.Drawing.Size(372, 13);
             this.tbSend.TabIndex = 2;
-            this.tbSend.Text = "exemple";
             this.tbSend.WordWrap = false;
             this.tbSend.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbSend_KeyUp);
             // 
