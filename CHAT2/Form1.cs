@@ -29,15 +29,14 @@ namespace CHAT2
         ClientProcess clientProcess;
         ServerProcess serverProcess;
         bool connected = false;
+        IPAddress local;
 
         public Chat()
         {
             InitializeComponent();
             chatlist = new List<MessageObject>();
-            writeToChat("Bem Vindo!");
-            writeToChat("Arroz! Arroz! Arroz!");
-            tbSend.Text = "Write here!";
             tbSend.Focus();
+            local = IPAddress.Parse("127.0.0.1");
         }
 
         public void chatNode()
@@ -125,6 +124,15 @@ namespace CHAT2
 
                         break;
                     }
+                case "/setip":
+                    {
+                        local = IPAddress.Parse(command[1]);
+                        if (local != null)
+                            writeToChat("IP successfully set to: " + local.ToString());
+                        else
+                            writeToChat("Invalid IP address!");
+                        break;
+                    }
             }
         }
 
@@ -147,7 +155,7 @@ namespace CHAT2
             {
                 tcpclient = new TcpClient();
                 tcpclient.Connect(ip,port);
-                clientThread.Start(new ClientProcess());
+                clientProcess = new ClientProcess();
                 return true;
             }
             catch(Exception connectex)
@@ -163,9 +171,9 @@ namespace CHAT2
         {
             try
             {
-                tcplistener = new TcpListener(port);
+                tcplistener = new TcpListener(local,port);
                 tcplistener.Start();
-                serverThread.Start(new ServerProcess());
+                serverProcess = new ServerProcess();
                 return true;
             }
             catch(Exception listenex)
