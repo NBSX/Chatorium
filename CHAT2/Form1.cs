@@ -42,6 +42,7 @@ namespace CHAT2
             chatlist = new List<MessageObject>();
             tbSend.Focus();
             local = IPAddress.Parse("127.0.0.1");
+            in_packet = new char[bufferSize];
         }
 
         private void tbSend_KeyUp(object sender, KeyPressEventArgs e)
@@ -64,6 +65,7 @@ namespace CHAT2
                     {
                         out_packet = new char[bufferSize];
                         stringToArray(tbSend.Text,out_packet);
+                        sendPacket(out_packet);
                     }
                     writeToChat(tbSend.Text, "localhost");
                 }
@@ -195,33 +197,19 @@ namespace CHAT2
         {
             StreamReader sr = new StreamReader(receiver.GetStream());
             StreamWriter sw = new StreamWriter(receiver.GetStream());
-            while(true)
+            while(connected)
             {
                 try
                 {
-                    sr.Read(in_packet, 0, (int)bufferSize);
                     if(in_packet != null)
                     {
+                        sr.Read(in_packet, 0, (int)bufferSize);
                         string s = new string(in_packet);
                         s = s.Trim('\0');
                         s = s.Trim();
                         if(s.Length > 1)
                             writeToChat(s);
-                        in_packet = null;
                     }
-
-                    if(out_packet != null)
-                    {
-                        Thread.Sleep(500);
-                        string g = new string(out_packet);
-                        g = g.Trim('\0');
-                        g = g.Trim();
-                        if (String.Compare(g, "orangemonkeyeagle") == 0)
-                            break;
-                        sw.WriteLine(out_packet);
-                        out_packet = null;
-                    }
-                    sw.Flush();
                 }
                 catch(Exception cpex)
                 {
@@ -232,12 +220,32 @@ namespace CHAT2
             writeToChat("Connection terminated.");
             receiver.Close();
             sr.Close();
-            sw.Close();
+        }
+
+        private void sendPacket(char[] p)
+        {
+            if (connected)
+            {
+                try
+                {
+                    StreamWriter sw = new StreamWriter(receiver.GetStream());
+                    sw.Write(p);
+                    sw.Flush();
+                }
+                catch(Exception spex)
+                {
+                    outputLog(spex.ToString());
+                }
+            }
+            else
+            {
+                writeToChat("Not connected!");
+            }
         }
 
         public static void outputLog(string s)
         {
-            StreamWriter file = new StreamWriter(@"C:\\error_"+ DateTime.Now.Hour.ToString() + ".log");
+            StreamWriter file = new StreamWriter(@"C:\\error_"+ DateTime.Now.Hour.ToString() + ".log",true);
             file.WriteLine(DateTime.Today.ToString() + ":::" + DateTime.Now.TimeOfDay.ToString());
             file.WriteLine(s);
             file.WriteLine("==================================================");
@@ -253,7 +261,6 @@ namespace CHAT2
         {
             for (int i = 0; i < s.Length; i++)
                 c[i] = s[i];
-
         }
     }
 }
