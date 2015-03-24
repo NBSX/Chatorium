@@ -10,6 +10,7 @@ namespace CHAT2
     {
         protected Peer author;
         protected string message;
+        protected string time_stamp;
 
         public MessageObject(Peer a, string m = null)
         {
@@ -17,13 +18,14 @@ namespace CHAT2
                 m = "";
             author = a;
             message = m;
+            time_stamp = DateTime.Now.ToString();
         }
 
         public override string ToString()
         {
             if (String.Compare(author.Name, "command") == 0)
                 return message;
-            return String.Concat("<", author, "> ", message);
+            return String.Concat(time_stamp + "   <", author.Name, "> ", message);
         }
     }
 }

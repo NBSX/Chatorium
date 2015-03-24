@@ -32,7 +32,7 @@ namespace CHAT2
         IPAddress local;
         char[] out_packet;
         char[] in_packet;
-        console console;
+        console consola;
         Thread listening;
         Peer me, other, command;
 
@@ -43,8 +43,8 @@ namespace CHAT2
             tbSend.Focus();
             local = IPAddress.Parse("127.0.0.1");
             in_packet = new char[bufferSize];
-            console = new console();
-            console.Show();
+            consola = new console();
+            consola.Show();
             me = new Peer();
             command = new Peer("command");
         }
@@ -77,7 +77,7 @@ namespace CHAT2
             }
             catch (Exception e1)
             {
-                console.WriteLine(e1.ToString());
+                consola.WriteLine(e1.ToString());
             }
         }
 
@@ -125,7 +125,7 @@ namespace CHAT2
                         }
                         catch(Exception e2)
                         {
-                            console.WriteLine(e2.ToString());
+                            consola.WriteLine(e2.ToString());
                             //outputLog(e2.ToString());
                             writeToChat("Invalid IP address or netmask.");
                         }
@@ -158,7 +158,7 @@ namespace CHAT2
                         for (int i = 1; i < command.Length; i++)
                         {
                             if (command[i] != null)
-                                console.WriteLine(command[i]);
+                                consola.WriteLine(command[i]);
                         }
                             break;
                     }
@@ -181,6 +181,17 @@ namespace CHAT2
 
                         break;
                     }
+                case "/exit":
+                    {
+                        if (connected)
+                        {
+                            string s = "%%##terminate-";
+                            out_packet = new char[bufferSize];
+                            stringToArray(s, out_packet);
+                            sendPacket(out_packet);
+                        }
+                        break;
+                    }
             }
         }
 
@@ -193,8 +204,9 @@ namespace CHAT2
             RefreshChat();
         }
 
-        private static void RefreshChat()
+        private void RefreshChat()
         {
+            consola.WriteLine("refreshing...");
             chatbox.DataSource = null;
             chatbox.DataSource = chatlist;
         }
@@ -212,7 +224,7 @@ namespace CHAT2
             catch(Exception connectex)
             {
                 writeToChat("Connection error!");
-                console.WriteLine(connectex.ToString());
+                consola.WriteLine(connectex.ToString());
                 //outputLog(connectex.ToString());
                 return false;
             }
@@ -233,9 +245,10 @@ namespace CHAT2
             catch(Exception listenex)
             {
                 writeToChat("Listen error!");
-                console.WriteLine(listenex.ToString());
+                consola.WriteLine(listenex.ToString());
                 //outputLog(listenex.ToString());
                 connected = false;
+                listening = null;
             }
 
             if (connected)
@@ -251,8 +264,10 @@ namespace CHAT2
             int count = 0;
             StreamReader sr = new StreamReader(receiver.GetStream());
             StreamWriter sw = new StreamWriter(receiver.GetStream());
+            other = new Peer();
             while(connected)
             {
+                
                 try
                 {
                     if(in_packet != null)
@@ -261,16 +276,28 @@ namespace CHAT2
                         string s = new string(in_packet);
                         s = s.Trim('\0');
                         s = s.Trim();
-                        if (s[0] == '%' && s[1] == '%' && s[2] == '#' && s[3] == '=')
+                        if (s.Length > 3 && s[0] == '%' && s[1] == '%' && s[2] == '#' && s[3] == '=')
+                        {
                             other.Name = s.Substring(4);
-                        else if (s.Length > 1)
-                                writeToChat(s, other);
+                            continue;
+                        }
+                        if (String.Compare(s, "%%##terminate-") == 0)
+                        {
+                            connected = false;
+                            listening = null;
+                            other.Name = "unnamed";
+                            receiver_process.Abort();
+                            writeToChat("Peer terminated connection.");
+                        }
+
+                        if (s.Length > 0)
+                            writeToChat(s, other);
                     }
                 }
                 catch(Exception cpex)
                 {
                     writeToChat("Client Process error!");
-                    console.WriteLine(cpex.ToString());
+                    consola.WriteLine(cpex.ToString());
                     count++;
                     if (count > 100)
                         connected = false;

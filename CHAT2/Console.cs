@@ -26,6 +26,7 @@ namespace CHAT2
         {
             console_output.Text += s;
             console_output.Text += Environment.NewLine;
+            console_output.Text += "==================================";
         }
     }
 }
