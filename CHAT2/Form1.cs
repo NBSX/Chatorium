@@ -34,6 +34,7 @@ namespace CHAT2
         char[] in_packet;
         console console;
         Thread listening;
+        Peer me, other, command;
 
         public Chat()
         {
@@ -44,6 +45,8 @@ namespace CHAT2
             in_packet = new char[bufferSize];
             console = new console();
             console.Show();
+            me = new Peer();
+            command = new Peer("command");
         }
 
         private void tbSend_KeyUp(object sender, KeyPressEventArgs e)
@@ -68,7 +71,7 @@ namespace CHAT2
                         stringToArray(tbSend.Text,out_packet);
                         sendPacket(out_packet);
                     }
-                    writeToChat(tbSend.Text, "localhost");
+                    writeToChat(tbSend.Text, me);
                 }
                 tbSend.Clear();
             }
@@ -110,6 +113,14 @@ namespace CHAT2
                             connected = connect(ip);
                             if (!connected)
                                 writeToChat("Could not connect to: " + ip.ToString());
+                            else
+                            {
+                                receiver_process.Start();
+                                string s = "%%#=" + me.Name;
+                                out_packet = new char[bufferSize];
+                                stringToArray(s, out_packet);
+                                sendPacket(out_packet);
+                            }
                             
                         }
                         catch(Exception e2)
@@ -151,12 +162,34 @@ namespace CHAT2
                         }
                             break;
                     }
+                case "/name":
+                    {
+                        if (command[1] != null)
+                        {
+                            me.Name = command[1];
+                            writeToChat("Name set!");
+                            if(connected)
+                            {
+                                string s = "%%#=" + me.Name;
+                                out_packet = new char[bufferSize];
+                                stringToArray(s, out_packet);
+                                sendPacket(out_packet);
+                            }
+                        }
+                        else
+                            writeToChat("Invalid name.");
+
+                        break;
+                    }
             }
         }
 
-        public static void writeToChat(string msg, string author = "command")
+        private void writeToChat(string msg, Peer author = null)
         {
-            chatlist.Add(new MessageObject(author, msg));
+            if(author == null)
+                chatlist.Add(new MessageObject(command, msg));
+            else
+                chatlist.Add(new MessageObject(author, msg));
             RefreshChat();
         }
 
@@ -174,7 +207,6 @@ namespace CHAT2
                 receiver = new TcpClient();
                 receiver.Connect(ip,port);
                 receiver_process = new Thread(new ThreadStart(ReceiverProcess));
-                receiver_process.Start();
                 return true;
             }
             catch(Exception connectex)
@@ -229,8 +261,10 @@ namespace CHAT2
                         string s = new string(in_packet);
                         s = s.Trim('\0');
                         s = s.Trim();
-                        if(s.Length > 1)
-                            writeToChat(s);
+                        if (s[0] == '%' && s[1] == '%' && s[2] == '#' && s[3] == '=')
+                            other.Name = s.Substring(4);
+                        else if (s.Length > 1)
+                                writeToChat(s, other);
                     }
                 }
                 catch(Exception cpex)

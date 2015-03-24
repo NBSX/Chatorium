@@ -8,10 +8,10 @@ namespace CHAT2
 {
     class MessageObject
     {
-        protected string author;
+        protected Peer author;
         protected string message;
 
-        public MessageObject(string a, string m = null)
+        public MessageObject(Peer a, string m = null)
         {
             if (m == null)
                 m = "";
@@ -21,7 +21,7 @@ namespace CHAT2
 
         public override string ToString()
         {
-            if (String.Compare(author, "command") == 0)
+            if (String.Compare(author.Name, "command") == 0)
                 return message;
             return String.Concat("<", author, "> ", message);
         }

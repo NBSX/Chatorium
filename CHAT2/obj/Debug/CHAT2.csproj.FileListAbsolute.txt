@@ -16,5 +16,4 @@ C:\Users\SQLSERVER\Documents\git\Chat\CHAT2\obj\Debug\CHAT2.Properties.Resources
 C:\Users\SQLSERVER\Documents\git\Chat\CHAT2\obj\Debug\CHAT2.csproj.GenerateResource.Cache
 C:\Users\SQLSERVER\Documents\git\Chat\CHAT2\bin\Debug\CHAT2.exe
 C:\Users\SQLSERVER\Documents\git\Chat\CHAT2\bin\Debug\CHAT2.pdb
-C:\Users\SQLSERVER\Documents\Git\Chat\CHAT2\obj\Debug\CHAT2.csprojResolveAssemblyReference.cache
 C:\Users\SQLSERVER\Documents\Git\Chat\CHAT2\obj\Debug\CHAT2.Console.resources
