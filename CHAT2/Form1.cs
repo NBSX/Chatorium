@@ -23,18 +23,17 @@ namespace CHAT2
 
         static List<MessageObject> chatlist;
         TcpClient receiver;
-        TcpClient sender;
 
         TcpListener listener;
 
         Thread receiver_process;
-        Thread sender_process;
 
         bool connected = false;
         IPAddress local;
         char[] out_packet;
         char[] in_packet;
-        
+        console console;
+        Thread listening;
 
         public Chat()
         {
@@ -43,6 +42,8 @@ namespace CHAT2
             tbSend.Focus();
             local = IPAddress.Parse("127.0.0.1");
             in_packet = new char[bufferSize];
+            console = new console();
+            console.Show();
         }
 
         private void tbSend_KeyUp(object sender, KeyPressEventArgs e)
@@ -73,6 +74,7 @@ namespace CHAT2
             }
             catch (Exception e1)
             {
+                console.WriteLine(e1.ToString());
             }
         }
 
@@ -112,23 +114,23 @@ namespace CHAT2
                         }
                         catch(Exception e2)
                         {
-                            Console.WriteLine("ERROR E2: INVALID IP ADDRESS OR NETMASK");
-                            outputLog(e2.ToString());
+                            console.WriteLine(e2.ToString());
+                            //outputLog(e2.ToString());
                             writeToChat("Invalid IP address or netmask.");
                         }
                         break;
                     }
                 case "/listen":
                     {
-                        if (connected) break;
-                        connected = listen();
-                        if (connected)
+                        if (listening != null)
                         {
-                            writeToChat("Connection received!");
+                            writeToChat("Already listening.");
+                            return;
                         }
-                        else
-                            writeToChat("Error while listening");
-
+                        if (connected) 
+                            return;
+                        listening = new Thread(new ThreadStart(listen));
+                        listening.Start();
                         break;
                     }
                 case "/setip":
@@ -139,6 +141,15 @@ namespace CHAT2
                         else
                             writeToChat("Invalid IP address!");
                         break;
+                    }
+                case "/toconsole":
+                    {
+                        for (int i = 1; i < command.Length; i++)
+                        {
+                            if (command[i] != null)
+                                console.WriteLine(command[i]);
+                        }
+                            break;
                     }
             }
         }
@@ -169,32 +180,43 @@ namespace CHAT2
             catch(Exception connectex)
             {
                 writeToChat("Connection error!");
-                outputLog(connectex.ToString());
+                console.WriteLine(connectex.ToString());
+                //outputLog(connectex.ToString());
                 return false;
             }
         }
 
-        private bool listen()
+        private void listen()
         {
             try
             {
+                writeToChat("Listening...");
                 listener = new TcpListener(local,port);
                 listener.Start();
                 receiver = listener.AcceptTcpClient();
+                connected = true;
                 receiver_process = new Thread(new ThreadStart(ReceiverProcess));
                 receiver_process.Start();
-                return true;
             }
             catch(Exception listenex)
             {
                 writeToChat("Listen error!");
-                outputLog(listenex.ToString());
-                return false;
+                console.WriteLine(listenex.ToString());
+                //outputLog(listenex.ToString());
+                connected = false;
             }
+
+            if (connected)
+            {
+                writeToChat("Connection received!");
+            }
+            else
+                writeToChat("Error while listening");
         }
 
         private void ReceiverProcess()
         {
+            int count = 0;
             StreamReader sr = new StreamReader(receiver.GetStream());
             StreamWriter sw = new StreamWriter(receiver.GetStream());
             while(connected)
@@ -214,7 +236,11 @@ namespace CHAT2
                 catch(Exception cpex)
                 {
                     writeToChat("Client Process error!");
-                    outputLog(cpex.ToString());
+                    console.WriteLine(cpex.ToString());
+                    count++;
+                    if (count > 100)
+                        connected = false;
+                    //outputLog(cpex.ToString());
                 }
             }
             writeToChat("Connection terminated.");
