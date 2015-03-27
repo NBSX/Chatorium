@@ -48,11 +48,11 @@
             // tbSend
             // 
             this.tbSend.BackColor = System.Drawing.Color.Black;
-            this.tbSend.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.tbSend.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tbSend.ForeColor = System.Drawing.Color.Lime;
             this.tbSend.Location = new System.Drawing.Point(12, 427);
             this.tbSend.Name = "tbSend";
-            this.tbSend.Size = new System.Drawing.Size(689, 13);
+            this.tbSend.Size = new System.Drawing.Size(689, 20);
             this.tbSend.TabIndex = 2;
             this.tbSend.WordWrap = false;
             this.tbSend.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbSend_KeyUp);
@@ -77,6 +77,7 @@
             this.Controls.Add(this.button2);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Chat";
+            this.Text = "LAN Chat";
             this.ResumeLayout(false);
             this.PerformLayout();
 

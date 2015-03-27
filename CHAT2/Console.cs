@@ -24,9 +24,17 @@ namespace CHAT2
 
         public void WriteLine(string s)
         {
-            console_output.Text += s;
-            console_output.Text += Environment.NewLine;
-            console_output.Text += "==================================";
+            console_output.AppendText(s);
+            console_output.AppendText(Environment.NewLine);
+            console_output.AppendText("==================================");
+            console_output.AppendText(Environment.NewLine);
+            if (s[0] == '/')
+                parseCommand(s);
+        }
+
+        private void parseCommand(string command)
+        {
+
         }
     }
 }

@@ -88,7 +88,7 @@ namespace CHAT2
             {
                 case "/about":
                     {
-                        writeToChat("Chat Program 0.002 Alpha");
+                        writeToChat("Chat Program 0.1 BETA");
                         break;
                     }
                 case "/connect":
@@ -181,7 +181,7 @@ namespace CHAT2
 
                         break;
                     }
-                case "/exit":
+                case "/disconnect":
                     {
                         if (connected)
                         {
@@ -189,6 +189,7 @@ namespace CHAT2
                             out_packet = new char[bufferSize];
                             stringToArray(s, out_packet);
                             sendPacket(out_packet);
+                            writeToChat("Disconnected.");
                         }
                         break;
                     }
@@ -286,8 +287,8 @@ namespace CHAT2
                             connected = false;
                             listening = null;
                             other.Name = "unnamed";
+                            writeToChat("Connection terminated by peer.");
                             receiver_process.Abort();
-                            writeToChat("Peer terminated connection.");
                         }
 
                         if (s.Length > 0)
